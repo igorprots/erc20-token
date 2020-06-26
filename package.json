@@ -1,0 +1,21 @@
+{
+  "name": "new-project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "truffle-config.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@babel/core": "^7.10.3",
+    "@truffle/contract": "^4.2.10",
+    "@truffle/hdwallet-provider": "^1.0.35",
+    "merge": "^1.2.1",
+    "sol": "^0.3.0"
+  }
+}
