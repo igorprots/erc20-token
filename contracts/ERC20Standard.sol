@@ -43,11 +43,10 @@ library SafeMath {
 contract ERC20Standard {
     using SafeMath for uint256;
     uint256 public totalSupply;
-
     string public name;
-    uint8 public decimals;
+    uint256 public decimals;
     string public symbol;
-    string public version;
+    uint256 public burningDate;
 
     mapping(address => uint256) balances;
     mapping(address => mapping(address => uint256)) allowed;
@@ -99,6 +98,16 @@ contract ERC20Standard {
         returns (uint256 balance)
     {
         return allowed[_owner][_spender];
+    }
+
+    function burn(uint256 _value) external {
+        require(now > burningDate, "Coins can't be burned now");
+        require(
+            balances[msg.sender] >= _value,
+            "Account balance is not enought to perform coins burning"
+        );
+        balances[msg.sender] -= _value;
+        totalSupply -= _value;
     }
 
     //Event which is triggered to log all transfers to this contract's event log
