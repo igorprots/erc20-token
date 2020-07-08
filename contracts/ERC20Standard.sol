@@ -47,15 +47,56 @@ contract ERC20Standard {
     uint256 public decimals;
     string public symbol;
     uint256 public burningDate;
+    uint256 length = 2;
 
     mapping(address => uint256) balances;
     mapping(address => mapping(address => uint256)) allowed;
+    mapping (address => uint256) counter;
+    mapping (address => bool) owners;
+	mapping (address => mapping (address => bool)) ownerChoice;
+
+
+
+	address constant own1 = 0xDB3Da15110cD37844515471f883A663D0239d174;
+	address constant own2 = 0xf3CA95E256effCE14c6674641510A13449548632;
+
+
 
     //Fix for short address attack against ERC20
     modifier onlyPayloadSize(uint256 size) {
         assert(msg.data.length == size + 4);
         _;
     }
+    modifier onlyOwner() {
+		require(owners[msg.sender] == true);
+		_;
+	}
+
+	function ownersBalance() public {
+		owners[own1] = true;
+		owners[own2] = true;
+		balances[own1] = totalSupply/2;
+		balances[own2] = totalSupply - balances[own1];
+	}
+
+	function isOwner(address _owner) view public  returns (bool) {
+		return owners[_owner];
+	}
+
+	function isOwnerChoice(address _owner, address _newOwner) view public  returns (bool) {
+		return ownerChoice[_owner][_newOwner];
+	}
+
+	function addOwner(address _newOwner) public onlyOwner  {
+		require(ownerChoice[msg.sender][_newOwner] == false && owners[_newOwner] == false);
+			ownerChoice[msg.sender][_newOwner] = true;
+			counter[_newOwner]++;
+			if (counter[_newOwner] > length/2) {
+				owners[_newOwner] = true;
+				length++;
+				counter[_newOwner] = 0;
+			}
+	}
 
     function balanceOf(address _owner) public view returns (uint256 balance) {
         return balances[_owner];
